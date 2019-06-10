@@ -72,6 +72,13 @@ static inline uint32_t detectHostSIMDExtensions()
 
  #endif
 
+#elif defined(__ve)
+
+static inline uint32_t detectHostSIMDExtensions()
+{
+  return SIMDExtension_DEFAULT;
+}
+
 #elif defined(__PPC64__)
 
  #if defined(__VSX__)

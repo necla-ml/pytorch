@@ -88,28 +88,30 @@ if (NOT BUILD_ATEN_MOBILE)
   cmake_pop_check_state()
 endif()
 
-# ---[ Check if std::exception_ptr is supported.
-cmake_push_check_state(RESET)
-set(CMAKE_REQUIRED_FLAGS "-std=c++11")
-CHECK_CXX_SOURCE_COMPILES(
-    "#include <string>
-    #include <exception>
-    int main(int argc, char** argv) {
-      std::exception_ptr eptr;
-      try {
-          std::string().at(1);
-      } catch(...) {
-          eptr = std::current_exception();
-      }
-    }" CAFFE2_EXCEPTION_PTR_SUPPORTED)
-
-if (CAFFE2_EXCEPTION_PTR_SUPPORTED)
-  message(STATUS "std::exception_ptr is supported.")
-  set(CAFFE2_USE_EXCEPTION_PTR 1)
-else()
-  message(STATUS "std::exception_ptr is NOT supported.")
+if(NOT (CMAKE_SYSTEM_PROCESSOR MATCHES "aurora"))
+  # ---[ Check if std::exception_ptr is supported.
+  cmake_push_check_state(RESET)
+  set(CMAKE_REQUIRED_FLAGS "-std=c++11")
+  CHECK_CXX_SOURCE_COMPILES(
+      "#include <string>
+      #include <exception>
+      int main(int argc, char** argv) {
+        std::exception_ptr eptr;
+        try {
+            std::string().at(1);
+        } catch(...) {
+            eptr = std::current_exception();
+        }
+      }" CAFFE2_EXCEPTION_PTR_SUPPORTED)
+  
+  if (CAFFE2_EXCEPTION_PTR_SUPPORTED)
+    message(STATUS "std::exception_ptr is supported.")
+    set(CAFFE2_USE_EXCEPTION_PTR 1)
+  else()
+    message(STATUS "std::exception_ptr is NOT supported.")
+  endif()
+  cmake_pop_check_state()
 endif()
-cmake_pop_check_state()
 
 # ---[ Check for NUMA support
 if (USE_NUMA)

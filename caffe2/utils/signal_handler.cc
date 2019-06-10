@@ -159,7 +159,9 @@ _Unwind_Reason_Code unwinder(struct _Unwind_Context* context, void* userInfo) {
 
 std::vector<uintptr_t> getBacktrace() {
   std::vector<uintptr_t> pcs;
+#if !(defined(__ve))
   _Unwind_Backtrace(unwinder, &pcs);
+#endif
   return pcs;
 }
 

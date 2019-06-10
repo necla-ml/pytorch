@@ -239,7 +239,7 @@ PSIMD_INTRINSIC psimd_f32 psimd_splat_f32(float c) {
   return (psimd_f32){c, c, c, c};
 }
 
-#if defined(__clang__)
+#if defined(__clang__) && !(defined(__ve))
 
 PSIMD_INTRINSIC psimd_f32 psimd_interleave_lo_f32(psimd_f32 a, psimd_f32 b) {
   return __builtin_shufflevector(a, b, 0, 4 + 0, 1, 4 + 1);
@@ -347,7 +347,7 @@ void runDepthwise3x3Conv(
   const psimd_f32 g0 = psimd_load_f32(kernel);
   const psimd_f32 g1 = psimd_load_f32(kernel + 3);
   const psimd_f32 g5678 = psimd_load_f32(kernel + 5);
-#ifdef __clang__
+#if defined(__clang__) && !(defined(__ve))
   const psimd_f32 g2 = __builtin_shufflevector(g5678, g5678, 1, 2, 3, -1);
 #else
   const psimd_f32 g2 =

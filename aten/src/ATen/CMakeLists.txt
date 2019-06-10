@@ -186,7 +186,7 @@ IF(UNIX)
   ENDIF(HAVE_MALLOC_USABLE_SIZE)
 ENDIF(UNIX)
 
-if(NOT MSVC)
+if(NOT MSVC AND NOT(CMAKE_SYSTEM_PROCESSOR MATCHES "aurora"))
   list(APPEND ATen_CPU_DEPENDENCY_LIBS m)
 endif()
 
@@ -201,7 +201,7 @@ endif(MKLDNN_FOUND)
 
 list(APPEND ATen_CPU_DEPENDENCY_LIBS cpuinfo)
 
-if(NOT MSVC AND NOT EMSCRIPTEN)
+if(NOT MSVC AND NOT EMSCRIPTEN AND NOT(CMAKE_SYSTEM_PROCESSOR MATCHES "aurora"))
   # Preserve values for the main build
   set(__aten_sleef_build_shared_libs ${BUILD_SHARED_LIBS})
   set(__aten_sleef_build_tests ${BUILD_TESTS})

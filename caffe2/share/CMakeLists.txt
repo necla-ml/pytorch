@@ -1,7 +1,9 @@
 # There is a linking issue that happens in some of the Windows builds.
 # TODO(Yangqing): after the module redesing, enable this back.
 if (NOT MSVC)
-  add_subdirectory(contrib)
+  if(NOT (CMAKE_SYSTEM_PROCESSOR MATCHES "aurora"))
+    add_subdirectory(contrib)
+  endif()
 endif()
 
 # CPU source, test sources, binary sources
