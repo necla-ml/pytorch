@@ -44,7 +44,7 @@ Then you can `make` and `make install`.
 
 ### Set your Caffe2 build environment
 
-`git clone https://github.com/necla-ml/pytorch` and set the following environment variables:
+`git clone --recursive https://github.com/necla-ml/pytorch` and set the following environment variables:
 
 ```bash
 export VE_LD_LIBRARY_PATH=/opt/nec/ve/lib:/path/to/lib/clang/9.0.0/lib/linux/ve:/your/protobuf/install/dir/lib
