@@ -76,6 +76,9 @@ directory.  Enter an environment where Python (for the host architecture)
 and PyTorch's dependent modules are installed, and execute `scripts/build_ve.sh`.
 Your libraries will be built in the subdirectory `build_ve/lib`.
 
+We recommend CMake 3.14.  If earlier CMake is used, CMake might only configure and not
+build, so that you need to go to `build_ve` and execute `make` yourself.
+
 --------------------------------------------------------------------------------
 The original README follows.
 --------------------------------------------------------------------------------
