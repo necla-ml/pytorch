@@ -8,7 +8,7 @@ as a Caffe2 model.  This library allows you to write C++ code on the VE that loa
 runs the model.
 
 An example of how to use the C++ Caffe2 API, including training, is available in the intro
-and mnist tutorials in [cdmalon/caffe2_cpp_examples](https://github.com/cdmalon/caffe2_cpp_examples).
+and mnist tutorials in [cdmalon/caffe2_cpp_tutorial](https://github.com/cdmalon/caffe2_cpp_tutorial).
 Note that a lot of the API has changed (upstream) after Caffe2 was incorporated into PyTorch,
 and these tutorials cover some of those changes.
 
