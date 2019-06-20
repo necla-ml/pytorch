@@ -1,3 +1,84 @@
+# Caffe2 for NEC SX-Aurora Vector Engine
+
+This repository contains modifications to the [PyTorch repository](https://github.com/pytorch/pytorch)
+to provide a working Caffe2 C++ library (not requiring python) for the Aurora VE.
+
+For example, you might train a PyTorch model on another processor, export it as ONNX, and save it
+as a Caffe2 model.  This library allows you to write C++ code on the VE that loads and
+runs the model.
+
+An example of how to use the C++ Caffe2 API, including training, is available in the intro
+and mnist tutorials in [cdmalon/caffe2_cpp_examples](https://github.com/cdmalon/caffe2_cpp_examples).
+Note that a lot of the API has changed (upstream) after Caffe2 was incorporated into PyTorch,
+and these tutorials cover some of those changes.
+
+## Installation
+
+### Install CLang
+
+Use clang from [llvm-ve](https://github.com/sx-aurora-dev/llvm-dev) for the following steps.
+
+### Build Protocol Buffers
+
+To build protobuf for VE, first you must build protobuf for the host x86 environment,
+so that you have an executable protoc compiler.
+
+Then clone [protocolbuffers/protobuf](https://github.com/protocolbuffers/protobuf) into a
+build directory for Aurora, and:
+```bash
+./autogen.sh
+/opt/nec/ve/bin/autoreconf -ifv
+./configure  --build=x86_64-unknown-linux-gnu --host=ve-unknown-linux-gnu CC=/path/to/clang CXX=/path/to/clang++ FC=nfort CCAS=nas LD=nld CFLAGS="-target ve-linux -O3 -fno-vectorize -fno-slp-vectorize -fno-crash-diagnostics" CXXFLAGS="-target ve-linux -O3 -fno-vectorize -fno-slp-vectorize -fno-crash-diagnostics" LDFLAGS="-target ve-linux -O3 -fno-vectorize -fno-slp-vectorize -fno-crash-diagnostics -Wl,-z,max-page-size=0x200000 -Wl,-rpath=/path/to/lib/clang/9.0.0/lib/linux/ve --with-protoc=/path/to/x86/protoc --prefix=/your/protobuf/install/dir
+export VE_LD_LIBRARY_PATH=/path/to/lib/clang/9.0.0/lib/linux/ve
+vi libtool
+```
+
+In ./libtool, set:
+```bash
+postdeps="-lc++ -lc++abi -lunwind -lpthread -ldl -lm -lc /path/to/lib/clang/9.0.0/lib/linux/libclang_rt.builtins-ve.a"  # in two places
+archive_cmds # add '-target ve-linux' to the existing setting, wherever this is set
+build_libtool_libs=yes  # just the first occurrence
+```
+
+Then you can `make` and `make install`.
+
+### Set your Caffe2 build environment
+
+`git clone https://github.com/necla-ml/pytorch` and set the following environment variables:
+
+```bash
+export VE_LD_LIBRARY_PATH=/opt/nec/ve/lib:/path/to/lib/clang/9.0.0/lib/linux/ve:/your/protobuf/install/dir/lib
+export NLC_HOME=/opt/nec/ve/nlc/1.0.0
+export Protobuf_INSTALL_DIR=/your/protobuf/install/dir
+export SNAPPY_ROOT_DIR=/your/snappy/install/dir # if desired; see below
+export LEVELDB_ROOT=/your/leveldb/install/dir # if desired; see below
+export CC=/path/to/clang
+export CXX=/path/to/clang++
+```
+
+### Build Snappy and LevelDB, if desired (needed for MNIST example)
+
+These can be cloned from [google/snappy](https://github.com/google/snappy) and
+[google/leveldb](https://github.com/google/leveldb).  Make a build subdirectory and:
+
+```bash
+cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/pytorch-checkout/cmake/Modules/ve.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/your/snappy/install/dir -DBUILD_SHARED_LIBS=ON ..
+make
+make install
+```
+
+and similarly for LevelDB.
+
+### Build Caffe2
+
+With the environment variables set as above, go to your PyTorch clone
+directory.  Enter an environment where Python (for the host architecture)
+and PyTorch's dependent modules are installed, and execute `scripts/build_ve.sh`.
+Your libraries will be built in the subdirectory `build_ve/lib`.
+
+--------------------------------------------------------------------------------
+The original README follows.
+--------------------------------------------------------------------------------
 ![PyTorch Logo](https://github.com/pytorch/pytorch/blob/master/docs/source/_static/img/pytorch-logo-dark.png)
 
 --------------------------------------------------------------------------------
