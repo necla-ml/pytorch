@@ -62,7 +62,7 @@ These can be cloned from [google/snappy](https://github.com/google/snappy) and
 [google/leveldb](https://github.com/google/leveldb).  Make a build subdirectory and:
 
 ```bash
-cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/pytorch-checkout/cmake/Modules/ve.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/your/snappy/install/dir -DBUILD_SHARED_LIBS=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=/path/to/pytorch-checkout/cmake/Modules/ve.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/your/snappy/install/dir -DBUILD_SHARED_LIBS=ON ..
 make
 make install
 ```
